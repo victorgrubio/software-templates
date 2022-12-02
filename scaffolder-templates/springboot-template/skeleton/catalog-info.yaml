@@ -8,7 +8,16 @@ metadata:
   annotations:
     github.com/project-slug: ${{values.destination.owner + "/" + values.destination.repo}}
     backstage.io/techdocs-ref: dir:.
+    dev.azure.com/project: Cerberus
+    dev.azure.com/build-definition: ${{"release." + values.component_id}}
+    backstage.io/kubernetes-label-selector: ${{"app=" + values.component_id}}
+  links:
+    - url: https://cerberus.multicloud.int.sap
+      title: Cerberus Dashboard
+      icon: dashboard
 spec:
   type: service
   lifecycle: experimental
   owner: ${{values.owner | dump}}
+  providesApis:
+    - ${{values.component_id + "-api"}}

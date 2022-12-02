@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ${{values.component_id}}
+  name: ${{values.component_id}}
+  namespace: ${{values.component_id}}
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 51%
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app: ${{values.component_id}}
+  template:
+    metadata:
+      labels:
+        app: ${{values.component_id}}
+    spec:
+      serviceAccountName: ksa-cerberus-backend-changelog
+      containers:
+        - image: us-docker.pkg.dev/sap-mc-cerberus-dev/cerberus-backend/${{values.component_id}}:1.0.0-SNAPSHOT
+          imagePullPolicy: Always
+          name:  ${{values.component_id}}
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: 1
+              memory: 2048Mi
+          ports:
+            - protocol: TCP
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: ${{values.component_id}}-configmap
+          readinessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /api/greetings/hello
+              port: 8080
+            initialDelaySeconds: 10
+            failureThreshold: 10
+            periodSeconds: 30
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ${{values.component_id}}-hpa
+  namespace: ${{values.component_id}}
+spec:
+  minReplicas: 1
+  maxReplicas: 4
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 85
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ${{values.component_id}}
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 60
+      policies:
+        - type: Pods
+          value: 2
+          periodSeconds: 60
+        - type: Percent
+          value: 20
+          periodSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 30
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 60
+        - type: Pods
+          value: 2
+          periodSeconds: 60
+      selectPolicy: Min
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ${{values.component_id}}
+  name: ${{values.component_id}}-service
+  namespace: ${{values.component_id}}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: ${{values.component_id}}

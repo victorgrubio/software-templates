@@ -1,0 +1,52 @@
+variables:
+  service_name: ${{values.component_id}}
+  version: '1.0.0-SNAPSHOT'
+  dev_gcp_gke_connection: 'DevKubernetesConnection'
+  dev_gcp_project: 'sap-mc-cerberus-dev'
+  dev_gcp_artifact_registry_connection: 'Dev GCP Artifact Registry Connection'
+  dev_gcp_artifact_registry_repo: 'cerberus-backend/$(service_name)'
+  gcp_artifact_registry_root: 'us-docker.pkg.dev'
+  namespace: 'cerberus-backend'
+
+trigger:
+  branches:
+    include:
+      - master
+      - main
+pr: none
+
+pool: VMSS Agent Pool
+
+stages:
+  - stage: Maven
+    displayName: Maven Build and Test
+    jobs:
+      - template: ../pipelines/maven-stage.yaml
+        parameters:
+          service_name: '$(service_name)'
+          version: '$(version)'
+  - stage: DockerBuildPublishDev
+    displayName: Publish Docker Image to Dev Artifact Registry
+    dependsOn: Maven
+    jobs:
+      - template: ../pipelines/docker-build-publish.yaml
+        parameters:
+          service_name: '$(service_name)'
+          version: '$(version)'
+          gcp_project: '$(dev_gcp_project)'
+          gcp_artifact_registry_connection: '$(dev_gcp_artifact_registry_connection)'
+          gcp_artifact_registry_repo: '$(dev_gcp_artifact_registry_repo)'
+  - stage: DockerDeployDEV
+    displayName: Update DEV GKE deployment
+    dependsOn: DockerBuildPublishDev
+    jobs:
+      - template: ../pipelines/deploy-k8s-list.yaml
+        parameters:
+          namespace: '$(namespace)'
+          k8s_connection: '$(dev_gcp_gke_connection)'
+          k8s_templates: |
+            $(service_name)/deployment/deployment.yaml
+          artifact_registry_location: '$(gcp_artifact_registry_root)'
+          gcp_project: '$(dev_gcp_project)'
+          repository_path: 'cerberus-backend'
+          docker_image: '$(service_name)'

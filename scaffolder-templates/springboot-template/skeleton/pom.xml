@@ -12,7 +12,7 @@
 
     <groupId>{{values.group_id}}</groupId>
     <artifactId>${{values.artifact_id}}</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>${{values.artifact_id}}</name>
@@ -33,28 +33,23 @@
       </snapshots>
       <id>central</id>
       <name>Maven Repository</name>
-      <url>http://repo1.maven.org/maven2</url>
+      <url>https://repo1.maven.org/maven2/</url>
     </repository>
     </repositories>
     <dependencies>
-    	
-        <dependency>
-          <groupId>io.github.lognet</groupId>
-          <artifactId>grpc-spring-boot-starter</artifactId>
-          <version>3.5.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
         <dependency> <!-- necessary for Java 9+ -->
           <groupId>org.apache.tomcat</groupId>
           <artifactId>annotations-api</artifactId>
           <version>6.0.53</version>
           <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
     </dependencies>
 

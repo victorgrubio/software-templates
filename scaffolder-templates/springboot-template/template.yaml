@@ -18,6 +18,7 @@ spec:
         - component_id
         - owner
         - java_package_name
+        - ado_pipeline_name
       properties:
         component_id:
           title: Name
@@ -40,6 +41,10 @@ spec:
           ui:options:
             allowedKinds:
               - Group
+        ado_pipeline_name:
+          title: Azure devops pipeline name
+          type: string
+          description: Name for the azure devops pipeline
     - title: Choose a location
       required:
         - repoUrl
@@ -76,14 +81,41 @@ spec:
         allowedHosts: ["github.com"]
         description: This is ${{ parameters.component_id }}
         repoUrl: ${{ parameters.repoUrl }}
+    
+    - id: createAzurePipeline
+      name: Create Azure Pipeline
+      action: azure:pipeline:create
+      input:
+        organization: mcnsa
+        project: Cerberus
+        name: ${{ parameters.ado_pipeline_name }}
+        # repositoryId: ${{ steps.publish.output.repositoryId }}
+        # repositoryName: ${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}
+        yamlPath: <optional value to your azure pipelines yaml file, defaults to ./azure-pipelines.yaml>
 
+    - id: runAzurePipeline
+      name: Run Azure Pipeline
+      action: azure:pipeline:run
+      input:
+        organization: mcnsa
+        pipelineId: ${{ steps.createAzurePipeline.output.pipelineId }}
+        project: Cerberus
+    - id: permitAzurePipeline
+      name: Change Azure Pipeline Permissions
+      action: azure:pipeline:permit
+      input:
+        organization: mcsna
+        project: Cerberus
+        resourceId: <serviceEndpointId>
+        resourceType: endpoint
+        authorized: true
+        pipelineId: ${{ steps.createAzurePipeline.output.pipelineId }}
     - id: register
       name: Register
       action: catalog:register
       input:
         repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
         catalogInfoPath: "/catalog-info.yaml"
-
   output:
     links:
       - title: Repository
@@ -91,3 +123,5 @@ spec:
       - title: Open in catalog
         icon: catalog
         entityRef: ${{ steps.register.output.entityRef }}
+      - title: Pipeline
+        url: ${{ steps.createAzurePipeline.output.pipelineUrl }}

@@ -88,8 +88,9 @@ spec:
       input:
         organization: mcnsa
         project: Cerberus
+        folder: sample-folder
         name: ${{ parameters.ado_pipeline_name }}
-        repositoryId: ${{ steps.publish.output.repositoryId }}
+        repositoryId: ${{ parameters.owner + "/" + parameters.component_id }}
         repositoryName: ${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}
         yamlPath: <optional value to your azure pipelines yaml file, defaults to ./azure-pipelines.yaml>
 

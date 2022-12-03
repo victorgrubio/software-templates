@@ -2,8 +2,8 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: springboot-template
-  title: Spring Boot gRPC Service
-  description: Create a simple microservice using gRPC and Spring Boot Java
+  title: Spring Boot Service
+  description: Create a simple microservice using Spring Boot Java
   tags:
     - recommended
     - java
@@ -91,7 +91,7 @@ spec:
         project: Cerberus
         folder: sample-folder
         name: ${{ parameters.ado_pipeline_name }}
-        repositoryId: ${{ parameters.owner + "/" + parameters.component_id }}
+        repositoryId: ${{  "I556741/" + parameters.component_id }}
         repositoryName: ${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}
         yamlPath: <optional value to your azure pipelines yaml file, defaults to ./azure-pipelines.yaml>
 

@@ -89,8 +89,8 @@ spec:
         organization: mcnsa
         project: Cerberus
         name: ${{ parameters.ado_pipeline_name }}
-        # repositoryId: ${{ steps.publish.output.repositoryId }}
-        # repositoryName: ${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}
+        repositoryId: ${{ steps.publish.output.repositoryId }}
+        repositoryName: ${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}
         yamlPath: <optional value to your azure pipelines yaml file, defaults to ./azure-pipelines.yaml>
 
     - id: runAzurePipeline

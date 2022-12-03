@@ -1,3 +1,4 @@
 
 .DS_Store
 /.idea/
+/scaffolder-templates/springboot-grpc-template/skeleton/skeleton.iml

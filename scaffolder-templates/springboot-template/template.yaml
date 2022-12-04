@@ -101,7 +101,7 @@ spec:
       input:
         organization: mcnsa
         pipelineId: ${{ steps.createAzurePipeline.output.pipelineId }}
-        project: Cerberus
+        project: 33372b58-759f-4d8c-b19a-c6014b17ff9c
     - id: permitAzurePipeline
       name: Change Azure Pipeline Permissions
       action: azure:pipeline:permit

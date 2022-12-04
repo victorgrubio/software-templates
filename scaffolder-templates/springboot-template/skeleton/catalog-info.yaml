@@ -11,6 +11,7 @@ metadata:
     dev.azure.com/project: Cerberus
     dev.azure.com/build-definition: ${{"release." + values.component_id}}
     backstage.io/kubernetes-label-selector: ${{"app=" + values.component_id}}
+    sonarqube.org/project-key: ${{ values.component_id }}
   links:
     - url: https://cerberus.multicloud.int.sap
       title: Cerberus Dashboard

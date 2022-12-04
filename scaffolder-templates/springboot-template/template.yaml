@@ -89,11 +89,11 @@ spec:
       input:
         organization: mcnsa
         project: 33372b58-759f-4d8c-b19a-c6014b17ff9c
-        folder: sample-folder
+        folder: "sample-folder"
         name: ${{ parameters.ado_pipeline_name }}
-        repositoryId:  ${{ (parameters.repoUrl | parseRepoUrl).repo }}
-        repositoryUrl: ${{ parameters.repoUrl }}
-        yamlPath: <optional value to your azure pipelines yaml file, defaults to ./azure-pipelines.yaml>
+        repositoryId:  ${{ (parameters.repoUrl | parseRepoUrl).owner + "/" + (parameters.repoUrl | parseRepoUrl).repo }}
+        repositoryUrl: ${{ "https://" + (parameters.repoUrl | parseRepoUrl).host + "/" (parameters.repoUrl | parseRepoUrl).owner + "/" + (parameters.repoUrl | parseRepoUrl).repo }}
+        yamlPath: ./azure-pipelines.yaml
 
     - id: runAzurePipeline
       name: Run Azure Pipeline

@@ -88,11 +88,11 @@ spec:
       action: azure:pipeline:create
       input:
         organization: mcnsa
-        project: Cerberus
-        folder: sample-folder
+        project: 33372b58-759f-4d8c-b19a-c6014b17ff9c
+        folder: null
         name: ${{ parameters.ado_pipeline_name }}
-        repositoryId: ${{  "I556741/" + parameters.component_id }}
-        repositoryName: ${{ (parameters.repoUrl | parseRepoUrl)['repo'] }}
+        repositoryId:  ${{ (parameters.repoUrl | parseRepoUrl).repo }}
+        repositoryUrl: ${{ parameters.repoUrl }}
         yamlPath: <optional value to your azure pipelines yaml file, defaults to ./azure-pipelines.yaml>
 
     - id: runAzurePipeline

@@ -89,7 +89,7 @@ spec:
       input:
         organization: mcnsa
         project: 33372b58-759f-4d8c-b19a-c6014b17ff9c
-        folder: null
+        folder: sample-folder
         name: ${{ parameters.ado_pipeline_name }}
         repositoryId:  ${{ (parameters.repoUrl | parseRepoUrl).repo }}
         repositoryUrl: ${{ parameters.repoUrl }}
